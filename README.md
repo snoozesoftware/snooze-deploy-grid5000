@@ -6,7 +6,7 @@ The Snooze Grid`5000 multi site deployement script
 
 * Make a reservation : 
 
-        (frontend)$ oargridsub -t deploy -w 1:00:00 rennes:rdef="{\\\\\\\"type='kavlan-global'\\\\\\\"}/vlan=1+/slash_22=1+/nodes=3",lyon:rdef=/nodes=3,sophia:rdef=/nodes=3 > ~/oargrid.out
+        (frontend)$ oargridsub -t deploy -w 1:00:00 rennes:rdef="{\\\\\\\"type='kavlan-global'\\\\\\\"}/vlan=1+/nodes=3",lyon:rdef=/nodes=3,sophia:rdef=/nodes=3 > ~/oargrid.out
 
 NB1 : On a single site you don't need to reserve a vlan. The reservation could be : 
 
@@ -28,7 +28,7 @@ If everything is fine this file looks like :
     [OAR_GRIDSUB] SSH KEY : /tmp/oargrid//oargrid_ssh_key_msimonin_42581
       You can use this key to connect directly to your OAR nodes with the oar user.
    
-* Connect to your job (with the subnet reservation): 
+* Connect to your job (with the kavlan reservation): 
 
         (frontend)$ oarsub -C 471354
 
@@ -42,7 +42,7 @@ If everything is fine this file looks like :
 
 * Download latest version of debian package (snoozenode is require, snoozeclient is optional) : 
 
-        (frontend)$ cd ~/snooze-grid5000-multisite/grid5000/deployscript/deb_packages/
+        (frontend)$ cd ~/snooze-deploy-grid5000/deployscript/deb_packages/
         (frontend)$ wget https://ci.inria.fr/snooze-software/job/master-snoozenode/ws/distributions/deb-package/snoozenode_1.1.0-0_all.deb  
         (frontend)$ wget https://ci.inria.fr/snooze-software/job/master-snoozeclient/ws/distributions/deb-package/snoozeclient_1.1.0-0_all.deb  
 
@@ -64,6 +64,7 @@ NB2 : If you set storage type to "local", the VMs base images will be propagated
 
 * Retrieve VMs base images in **~/vmimages/**
 You can get my debian base image in /home/msimonin/vmimages in Rennes
+(see Snooze documentation to know how to generate a new image)
 
         (frontend)$ scp -r <yourlogin>@rennes:/home/msimonin/vmimages ~/.
 
