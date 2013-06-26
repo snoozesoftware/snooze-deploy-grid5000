@@ -38,11 +38,11 @@ If everything is fine this file looks like :
 
 * Clone the git repository :
 
-        (frontend)$ git clone https://github.com/msimonin/snooze-grid5000-multisite.git 
+        (frontend)$ git clone https://github.com/snoozesoftware/snooze-deploy-grid5000.git
 
 * Download latest version of debian package (snoozenode is require, snoozeclient is optional) : 
 
-        (frontend)$ cd ~/snooze-deploy-grid5000/deployscript/deb_packages/
+        (frontend)$ cd ~/snooze-deploy-grid5000/deb_packages/
         (frontend)$ wget https://ci.inria.fr/snooze-software/job/master-snoozenode/ws/distributions/deb-package/snoozenode_1.1.0-0_all.deb  
         (frontend)$ wget https://ci.inria.fr/snooze-software/job/master-snoozeclient/ws/distributions/deb-package/snoozeclient_1.1.0-0_all.deb  
 
@@ -50,7 +50,7 @@ Other packages could be found in https://ci.inria.fr/snooze-software/.
 
 * Configure the number of nodes in the **settings.sh** and the deployment type : 
 
-        (frontend)$ cd ~/snooze-grid5000-multisite/grid5000/deployscript/
+        (frontend)$ cd ~/snooze-grid5000-multisite/deployscript/
         (frontend)$ vi scripts/settings.sh
 
         multisite=true|false
@@ -79,7 +79,7 @@ You can get my debian base image in /home/msimonin/vmimages in Rennes
 
 * Connection to the first bootstrap : 
  
-        (service)$ cd /tmp/service/snooze-grid5000-multisite/grid5000/deployscript/
+        (service)$ cd /tmp/service/snooze-deploy-grid5000
         (service)$ cat tmp/bootstrap_nodes.txt
         (service)$ ssh -l root <first bootstrap>
 
