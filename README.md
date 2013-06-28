@@ -39,12 +39,13 @@ If everything is fine this file looks like :
 * Clone the git repository :
 
         (frontend)$ git clone https://github.com/snoozesoftware/snooze-deploy-grid5000.git
+        (frontend)$ git checkout 1.1.0
 
 * Download latest version of debian package (snoozenode is require, snoozeclient is optional) : 
 
         (frontend)$ cd ~/snooze-deploy-grid5000/deb_packages/
-        (frontend)$ wget https://ci.inria.fr/snooze-software/job/master-snoozenode/ws/distributions/deb-package/snoozenode_1.1.0-0_all.deb  
-        (frontend)$ wget https://ci.inria.fr/snooze-software/job/master-snoozeclient/ws/distributions/deb-package/snoozeclient_1.1.0-0_all.deb  
+        (frontend)$ wget https://ci.inria.fr/snooze-software/job/maint-1.1.0-snoozenode/ws/distributions/deb-package/snoozenode_1.1.0-0_all.deb  
+        (frontend)$ wget https://ci.inria.fr/snooze-software/job/maint-1.1.0-snoozeclient/ws/distributions/deb-package/snoozeclient_1.1.0-0_all.deb  
 
 Other packages could be found in https://ci.inria.fr/snooze-software/.
 
