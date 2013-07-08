@@ -29,7 +29,10 @@ configure_packages() {
    
     # KaPower3
     create_and_deploy_kapower_configuration
-    
+
+    # Ganglia
+    create_and_deploy_ganglia_configuration
+ 
     # Client
     create_and_deploy_client_configuration
     
@@ -84,6 +87,14 @@ create_and_deploy_kapower_configuration () {
     create_kapower3_configuration
     deploy_kapower3_configuration
 }
+
+# Deploy ganglia configuration
+create_and_deploy_kapower_configuration () {
+    echo "$log_tag Creating and deploying ganglia configuration"
+    create_ganglia_configuration
+    deploy_ganglia_configuration
+}
+
 
 # Creates and deploys client configuration
 create_and_deploy_client_configuration () {
@@ -176,6 +187,11 @@ create_kapower3_configuration () {
     sed 's/^default.*/default : '$cluster_location'/g' "$config_templates_directory/$kapower_config_name" > "$tmp_directory/$kapower_config_name" 
 }
 
+# Creates a ganglia configuration file
+create_ganglia_configuration () {
+    cp $config_templates_directory/$ganglia_config_name $tmp_directory/$ganglia_config_name
+}
+
 # Creates a client configuration file
 create_client_configuration () {
     #local bootstrap_addresses=$(get_hosts_from_file "bootstrap_nodes.txt")
@@ -209,6 +225,7 @@ create_local_controller_configuration () {
     sed 's/^node.role.*/node.role = localcontroller/g' "$config_templates_directory/$node_config_name" > "$tmp_directory/snooze_node_lc.cfg" 
     perl -pi -e "s/^energyManagement.drivers.wakeup.options.*/energyManagement.drivers.wakeup.options = -m $1/" "$tmp_directory/snooze_node_lc.cfg"
     perl -pi -e "s/^external.notifier.address.*/external.notifier.address = $2/" "$tmp_directory/snooze_node_lc.cfg"
+    perl -pi -e "s/^localController.metrics.hostname.*/ localController.metrics.hostname = $1/" "$tmp_directory/snooze_node_lc.cfg"
 }
 
 # Deploys the kapower3 configuration files
@@ -216,6 +233,11 @@ deploy_kapower3_configuration () {
     run_taktuk "$tmp_directory/hosts_list.txt" put "[ $tmp_directory/$kapower_config_name ] [ /etc/kadeploy3/$kapower_config_name ]"
 }
 
+# Deploys the ganglia configuration files
+deploy_ganglia_configuration () {
+    run_taktuk "$tmp_directory/hosts_list.txt" put "[ $tmp_directory/$ganglia_config_name ] [ /etc/ganglia/$ganglia_config_name ]"
+    run_taktuk "$tmp_directory/hosts_list.txt" exec "[ service ganglia-monitor restart ]"
+}
 # Deploys the client configurations
 deploy_client_configuration () {
     run_taktuk "$tmp_directory/hosts_list.txt" put "[ $tmp_directory/$client_config_name ] [ /usr/share/snoozeclient/configs/$client_config_name ]"

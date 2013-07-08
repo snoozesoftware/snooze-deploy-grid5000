@@ -23,7 +23,7 @@ author="Eugen Feller <eugen.feller@inria.fr> Matthieu Simonin <matthieu.simonin@
 log_tag="[Snooze]"
 
 
-multisite=true
+multisite=false
 
 ## Exit codes
 error_code=1
@@ -51,6 +51,7 @@ tmp_directory="$deploy_script_directory/tmp"
 
 ## Config names 
 kapower_config_name="client_conf.yml"
+ganglia_config_name="gmond.conf"
 zookeeper_config_name="zoo.cfg"
 zookeeper_myid="myid"
 client_config_name="snooze_client.cfg"
