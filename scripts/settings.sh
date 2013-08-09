@@ -38,7 +38,10 @@ base_directory=$HOME
 root_script_directory="snooze-deploy-grid5000"
 relative_script_directory="$root_script_directory"
 deploy_script_directory="$base_directory/$relative_script_directory"
-
+# localcluster directory (for custom topology)
+localcluster_script_name="snooze-deploy-localcluster"
+localcluster_directory="$base_directory/$localcluster_script_name"
+remote_localcluster_script_directory="/tmp/$localcluster_script_name"
 # Katapult
 katapult_commad="$deploy_script_directory/katapult/katapult3"
 
@@ -99,8 +102,8 @@ environment_url=$environment_location/$environment_name
 ## Cluster settings 
 centralized_deployment=false
 number_of_bootstrap_nodes=1
-number_of_group_managers=2
-number_of_local_controllers=3
+number_of_group_managers=3
+number_of_local_controllers=10
 number_of_subnets=1
 
 # Deployment specific settings

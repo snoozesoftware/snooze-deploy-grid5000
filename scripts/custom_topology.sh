@@ -72,12 +72,12 @@ init_custom_topology (){
 
 copy_localcluster_script (){
    echo "$log_tag Copying the localcluster file"  
-   run_taktuk "$tmp_directory/hosts_list.txt" put "[ $base_directory/$root_script_directory/localcluster ] [ /tmp/ ]"
+   run_taktuk "$tmp_directory/hosts_list.txt" put "[ $localcluster_directory ] [ /tmp/ ]"
 }
 
 configure_localcluster_script(){
    echo "$log_tag  Configuring custom topology"
-   settings_path="$base_directory/$root_script_directory/localcluster/scripts/settings.sh"
+   settings_path="$localcluster_directory/scripts/settings.sh"
    mcast_port=10000
    for i in $(cat $tmp_directory/custom_topology_group_managers.txt) 
    do
@@ -88,7 +88,7 @@ configure_localcluster_script(){
       perl -pi -e "s/^number_of_local_controllers.*/number_of_local_controllers=0/" "$tmp_directory/$node.settings.sh"
       perl -pi -e "s/^sleep_time.*/sleep_time=$sleep_time/" "$tmp_directory/$node.settings.sh"
       perl -pi -e "s/^start_group_manager_heartbeat_mcast_port.*/start_group_manager_heartbeat_mcast_port=$mcast_port/" "$tmp_directory/$node.settings.sh" 
-      run_taktuk_single_machine "$node" put "[ $tmp_directory/$node.settings.sh ] [ /tmp/localcluster/scripts/settings.sh ]"
+      run_taktuk_single_machine "$node" put "[ $tmp_directory/$node.settings.sh ] [ $remote_localcluster_script_directory/scripts/settings.sh ]"
       mcast_port=$(($mcast_port+$gms))
   done
 
@@ -96,11 +96,11 @@ configure_localcluster_script(){
   do
      node=`echo $i | cut -f1 -d","`
      lcs=`echo $i | cut -f2 -d","`
-     perl -p -e "s/^number_of_local_controllers.*/number_of_local_controllers=$lcs/" "$base_directory/$root_script_directory/localcluster/scripts/settings.sh" > $tmp_directory/$node.settings.sh
+     perl -p -e "s/^number_of_local_controllers.*/number_of_local_controllers=$lcs/" "$localcluster_directory/scripts/settings.sh" > $tmp_directory/$node.settings.sh
       perl -pi -e "s/^number_of_bootstrap_nodes.*/number_of_bootstrap_nodes=0/" "$tmp_directory/$node.settings.sh"
       perl -pi -e "s/^number_of_group_managers.*/number_of_group_managers=0/" "$tmp_directory/$node.settings.sh"
       perl -pi -e "s/^sleep_time.*/sleep_time=$sleep_time/" "$tmp_directory/$node.settings.sh"
-      run_taktuk_single_machine "$node" put "[ $tmp_directory/$node.settings.sh ] [ /tmp/localcluster/scripts/settings.sh ]"
+      run_taktuk_single_machine "$node" put "[ $tmp_directory/$node.settings.sh ] [ $remote_localcluster_script_directory/scripts/settings.sh ]"
   done
 }
 
@@ -109,37 +109,37 @@ start_custom_topology () {
    echo "$log_tag Starting the bootstrap"
    run_taktuk "$tmp_directory/bootstrap_nodes.txt" exec "[ $remote_scripts_directory/start_bootstrap.sh ]"   
    echo "$log_tag Starting the first manager"
-run_taktuk_single_machine "`cat $tmp_directory/group_managers_first.txt`" exec "[ cd /tmp/localcluster ; ./start_local_cluster.sh -s 1> log 2>&1 ]" 
+   run_taktuk_single_machine "`cat $tmp_directory/group_managers_first.txt`" exec "[ cd $remote_localcluster_script_directory ; ./start_local_cluster.sh -s 1> log 2>&1 ]" 
    sleep 1
    if [ "$sleep_time" -gt "0" ];
    then   
      echo "$log_tag Starting the other group managers incrementaly"
      for i in $(cat $tmp_directory/group_managers_left.txt)
      do
-       run_taktuk_single_machine "$i"  exec "[ cd /tmp/localcluster ; ./start_local_cluster.sh -s 1> log 2>&1 ]"
+       run_taktuk_single_machine "$i"  exec "[ cd $remote_localcluster_script_directory ; ./start_local_cluster.sh -s 1> log 2>&1 ]"
        sleep $sleep_time
      done
    else 
      echo "$log_tag Starting the other group managers burst"
-     run_taktuk "$tmp_directory/group_managers_left.txt"  exec "[ cd /tmp/localcluster ; ./start_local_cluster.sh -s 1> log 2>&1 ]"
+     run_taktuk "$tmp_directory/group_managers_left.txt"  exec "[ cd $remote_localcluster_script_directory ; ./start_local_cluster.sh -s 1> log 2>&1 ]"
    fi
    if [ "$sleep_time" -gt "0" ];
    then   
      echo "$log_tag Starting the local controllers incrementaly"
      for i in $(cat $tmp_directory/local_controllers.txt)
      do
-       run_taktuk_single_machine "$i"  exec "[ cd /tmp/localcluster ; ./start_local_cluster.sh -l 1> log 2>&1  ; ./start_local_cluster.sh -s  1> log 2>&1 ]"
+       run_taktuk_single_machine "$i"  exec "[ cd  $remote_localcluster_script_directory ; ./start_local_cluster.sh -l 1> log 2>&1  ; ./start_local_cluster.sh -s  1> log 2>&1 ]"
        sleep $sleep_time
      done
    else 
      echo "$log_tag Starting the localcontroller burst"
-     run_taktuk "$tmp_directory/local_controllers.txt"  exec "[ cd /tmp/localcluster ; ./start_local_cluster.sh -l 1> log 2>&1  ; ./start_local_cluster.sh -s  1> log 2>&1 ]"
+     run_taktuk "$tmp_directory/local_controllers.txt"  exec "[ cd $remote_localcluster_script_directory ; ./start_local_cluster.sh -l 1> log 2>&1  ; ./start_local_cluster.sh -s  1> log 2>&1 ]"
    fi
 }
 
 stop_custom_topology () {
    echo "$log_tag Stoping the custom topology cluster"
    run_taktuk "$tmp_directory/bootstrap_nodes.txt" exec "[ $remote_scripts_directory/stop_bootstrap.sh ]"
-   run_taktuk "$tmp_directory/group_managers.txt"  exec "[ cd /tmp/localcluster ; ./start_local_cluster.sh -k ; rm -rf /tmp/snooze_node* ]"
-   run_taktuk "$tmp_directory/local_controllers.txt"  exec "[ cd /tmp/localcluster ; ./start_local_cluster.sh -k ;./start_local_cluster.sh -d ; rm -rf /tmp/snooze_node* ]"
+   run_taktuk "$tmp_directory/group_managers.txt"  exec "[ cd $remote_localcluster_script_directory ; ./start_local_cluster.sh -k ; rm -rf /tmp/snooze_node* ]"
+   run_taktuk "$tmp_directory/local_controllers.txt"  exec "[ cd $remote_localcluster_script_directory ; ./start_local_cluster.sh -k ;./start_local_cluster.sh -d ; rm -rf /tmp/snooze_node* ]"
 }
