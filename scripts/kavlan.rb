@@ -7,7 +7,7 @@
 
 kavlan=`kavlan -V -j #{ARGV[0]}`
 b=(kavlan.to_i-10)*4+3
-virtualMachineSubnets = (216..255).step(2).to_a.map{|x| "10."+b.to_s+"."+x.to_s+".1\\/23\n"}
+virtualMachineSubnets = (216..255).step(2).to_a.map{|x| "10."+b.to_s+"."+x.to_s+".1\\/23"}.join(",")
 File.open(ARGV[1], 'w') { |file| file.write(virtualMachineSubnets) }
 gateway="10."+b.to_s+".255.254"
 network="10."+b.to_s+".192.0"

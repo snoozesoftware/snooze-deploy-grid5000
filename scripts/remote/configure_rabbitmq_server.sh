@@ -24,4 +24,6 @@ source $scriptpath/environment.sh
 rabbitmqctl add_user $rabbitmq_user $rabbitmq_password
 rabbitmqctl add_vhost $rabbitmq_vhost
 rabbitmqctl set_permissions -p $rabbitmq_vhost $rabbitmq_user "$rabbitmq_permissions_resource" "$rabbitmq_permissions_read" "$rabbitmq_permissions_write"
+
 service rabbitmq-server restart
+
